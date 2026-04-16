@@ -1,0 +1,106 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: bikeflow-postgres
+    environment:
+      POSTGRES_DB: kestra
+      POSTGRES_USER: kestra
+      POSTGRES_PASSWORD: kestra
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bikeflow-net
+
+  kestra:
+    image: kestra/kestra:latest
+    container_name: bikeflow-kestra
+    user: "root"
+    command: server standalone
+    environment:
+      KESTRA_CONFIGURATION: |
+        datasources:
+          default:
+            url: jdbc:postgresql://postgres:5432/kestra
+            driverClassName: org.postgresql.Driver
+            username: kestra
+            password: kestra
+
+        kestra:
+          server:
+            basicAuth:
+              enabled: false
+          repository:
+            type: postgres
+          queue:
+            type: postgres
+          storage:
+            type: local
+            local:
+              basePath: /app/storage
+    ports:
+      - "8080:8080"
+    volumes:
+      - kestra_storage:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./kestra/flows:/app/flows
+    depends_on:
+      - postgres
+    networks:
+      - bikeflow-net
+
+  redpanda:
+    image: redpandadata/redpanda:v24.1.8
+    container_name: bikeflow-redpanda
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - "1G"
+      - --reserve-memory
+      - "0M"
+      - --node-id
+      - "0"
+      - --check=false
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:9092
+    ports:
+      - "9092:9092"
+    networks:
+      - bikeflow-net
+
+  flink-jobmanager:
+    image: flink:1.17.2-scala_2.12-java11
+    container_name: bikeflow-flink-jobmanager
+    command: jobmanager
+    ports:
+      - "8081:8081"
+    environment:
+      JOB_MANAGER_RPC_ADDRESS: flink-jobmanager
+    networks:
+      - bikeflow-net
+
+  flink-taskmanager:
+    image: flink:1.17.2-scala_2.12-java11
+    container_name: bikeflow-flink-taskmanager
+    command: taskmanager
+    depends_on:
+      - flink-jobmanager
+    environment:
+      JOB_MANAGER_RPC_ADDRESS: flink-jobmanager
+    networks:
+      - bikeflow-net
+
+volumes:
+  postgres_data:
+  kestra_storage:
+
+networks:
+  bikeflow-net:
+    driver: bridge
