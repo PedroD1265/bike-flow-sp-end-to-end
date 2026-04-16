@@ -82,24 +82,34 @@ services:
       - bikeflow-net
 
   flink-jobmanager:
-    image: flink:1.17.2-scala_2.12-java11
+    build:
+      context: .
+      dockerfile: flink/Dockerfile
     container_name: bikeflow-flink-jobmanager
     command: jobmanager
     ports:
       - "8081:8081"
     environment:
       JOB_MANAGER_RPC_ADDRESS: flink-jobmanager
+    volumes:
+      - ./flink/jobs:/opt/flink/jobs
+      - ./flink/lib/flink-sql-connector-kafka-1.17.2.jar:/opt/flink/lib/flink-sql-connector-kafka-1.17.2.jar
     networks:
       - bikeflow-net
 
   flink-taskmanager:
-    image: flink:1.17.2-scala_2.12-java11
+    build:
+      context: .
+      dockerfile: flink/Dockerfile
     container_name: bikeflow-flink-taskmanager
     command: taskmanager
     depends_on:
       - flink-jobmanager
     environment:
       JOB_MANAGER_RPC_ADDRESS: flink-jobmanager
+    volumes:
+      - ./flink/jobs:/opt/flink/jobs
+      - ./flink/lib/flink-sql-connector-kafka-1.17.2.jar:/opt/flink/lib/flink-sql-connector-kafka-1.17.2.jar
     networks:
       - bikeflow-net
 
