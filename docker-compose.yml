@@ -86,6 +86,7 @@ services:
       context: .
       dockerfile: flink/Dockerfile
     container_name: bikeflow-flink-jobmanager
+    user: "root"
     command: jobmanager
     ports:
       - "8081:8081"
@@ -94,6 +95,7 @@ services:
     volumes:
       - ./flink/jobs:/opt/flink/jobs
       - ./flink/lib/flink-sql-connector-kafka-1.17.2.jar:/opt/flink/lib/flink-sql-connector-kafka-1.17.2.jar
+      - ./data:/opt/flink/data
     networks:
       - bikeflow-net
 
@@ -102,6 +104,7 @@ services:
       context: .
       dockerfile: flink/Dockerfile
     container_name: bikeflow-flink-taskmanager
+    user: "root"
     command: taskmanager
     depends_on:
       - flink-jobmanager
@@ -110,6 +113,7 @@ services:
     volumes:
       - ./flink/jobs:/opt/flink/jobs
       - ./flink/lib/flink-sql-connector-kafka-1.17.2.jar:/opt/flink/lib/flink-sql-connector-kafka-1.17.2.jar
+      - ./data:/opt/flink/data
     networks:
       - bikeflow-net
 
