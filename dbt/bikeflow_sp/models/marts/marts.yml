@@ -48,3 +48,14 @@ models:
       - name: snapshot_hour
         tests:
           - not_null
+  - name: mart_station_risk_summary_enriched
+    columns:
+      - name: station_id
+        tests:
+          - not_null
+      - name: station_name
+        tests:
+          - not_null
+      - name: bike_shortage_hour_rate
+        tests:
+          - not_null
