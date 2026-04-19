@@ -1,0 +1,7 @@
+project_id           = "bikeflow-sp-dezoomcamp"
+region               = "southamerica-east1"
+location             = "southamerica-east1"
+tfstate_bucket_name  = "bikeflow-sp-dezoomcamp-tfstate"
+raw_bucket_name      = "bikeflow-sp-dezoomcamp-raw"
+bq_dataset_raw       = "bikeflow_raw"
+bq_dataset_analytics = "bikeflow_analytics"
