@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_station_status
+    columns:
+      - name: station_id
+        tests:
+          - not_null
+      - name: ingested_at
+        tests:
+          - not_null
+
+  - name: stg_station_information
+    columns:
+      - name: station_id
+        tests:
+          - not_null
+      - name: station_name
+        tests:
+          - not_null
+      - name: ingested_at
+        tests:
+          - not_null
