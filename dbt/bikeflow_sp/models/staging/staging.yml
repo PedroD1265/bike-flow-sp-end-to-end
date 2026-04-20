@@ -15,6 +15,7 @@ models:
       - name: station_id
         tests:
           - not_null
+          - unique
       - name: station_name
         tests:
           - not_null

@@ -14,11 +14,16 @@ services:
       - bikeflow-net
 
   kestra:
-    image: kestra/kestra:latest
+    build:
+      context: .
+      dockerfile: kestra/Dockerfile
     container_name: bikeflow-kestra
     user: "root"
     command: server standalone
     environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /home/pedro/.config/gcloud/application_default_credentials.json
+      DBT_PROFILES_DIR: /home/kestra/.dbt
+      CLOUDSDK_CONFIG: /home/pedro/.config/gcloud
       KESTRA_CONFIGURATION: |
         datasources:
           default:
@@ -42,9 +47,11 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - kestra_storage:/app/storage
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./kestra/flows:/app/flows
+      - ./:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/pedro/.config/gcloud:/home/pedro/.config/gcloud
+      - /home/pedro/.dbt:/home/kestra/.dbt:ro
     depends_on:
       - postgres
     networks:

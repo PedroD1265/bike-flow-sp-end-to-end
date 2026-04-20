@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: bikeflow_raw
-    database: bikeflow-sp-dezoomcamp
+    database: "{{ env_var('GOOGLE_CLOUD_PROJECT', 'bikeflow-sp-dezoomcamp') }}"
     schema: bikeflow_raw
     tables:
       - name: station_status_raw

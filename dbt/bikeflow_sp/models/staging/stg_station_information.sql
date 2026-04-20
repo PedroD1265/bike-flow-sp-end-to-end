@@ -13,3 +13,7 @@ select
     date(ingested_at) as snapshot_date,
     extract(hour from ingested_at) as snapshot_hour
 from {{ source('bikeflow_raw', 'station_information_raw') }}
+qualify row_number() over (
+    partition by station_id
+    order by ingested_at desc
+) = 1

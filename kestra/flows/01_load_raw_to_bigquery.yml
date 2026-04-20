@@ -1,0 +1,41 @@
+id: load_raw_to_bigquery
+namespace: bikeflow
+
+tasks:
+  - id: upload_raw_to_gcs
+    type: io.kestra.plugin.scripts.shell.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - cd "${WORKSPACE_DIR:-/workspace}"
+      - bash scripts/upload_raw_to_gcs.sh
+
+  - id: load_raw_to_bigquery
+    type: io.kestra.plugin.scripts.shell.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - cd "${WORKSPACE_DIR:-/workspace}"
+      - bash scripts/load_raw_to_bigquery.sh
+
+  - id: dbt_run
+    type: io.kestra.plugin.scripts.shell.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - export DBT_PROFILES_DIR="${DBT_PROFILES_DIR:-/home/kestra/.dbt}"
+      - export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/home/pedro/.config/gcloud/application_default_credentials.json}"
+      - export GOOGLE_CLOUD_PROJECT="${GOOGLE_CLOUD_PROJECT:-bikeflow-sp-dezoomcamp}"
+      - cd "${WORKSPACE_DIR:-/workspace}/dbt/bikeflow_sp"
+      - dbt run
+
+  - id: dbt_test
+    type: io.kestra.plugin.scripts.shell.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - export DBT_PROFILES_DIR="${DBT_PROFILES_DIR:-/home/kestra/.dbt}"
+      - export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/home/pedro/.config/gcloud/application_default_credentials.json}"
+      - export GOOGLE_CLOUD_PROJECT="${GOOGLE_CLOUD_PROJECT:-bikeflow-sp-dezoomcamp}"
+      - cd "${WORKSPACE_DIR:-/workspace}/dbt/bikeflow_sp"
+      - dbt test

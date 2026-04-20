@@ -1,6 +1,6 @@
 # Bike Flow SP End-to-End
 
-Streaming data engineering project for analyzing bike station availability in São Paulo using GBFS, Kafka/Redpanda, PyFlink, GCS, BigQuery, dbt, and Looker Studio.
+End-to-end data engineering project for near-real-time bike station monitoring in São Paulo using GBFS, Redpanda, PyFlink, GCS, BigQuery, dbt, Kestra, and Looker Studio.
 
 ## Problem statement
 
@@ -30,7 +30,7 @@ Main feeds to be used:
 
 ## Architecture
 
-GBFS São Paulo → Python Producer → Redpanda/Kafka → PyFlink → GCS → Kestra → BigQuery → dbt → Looker Studio
+GBFS São Paulo → Python Producer → Redpanda/Kafka → PyFlink → raw local → GCS → Kestra → BigQuery raw → dbt marts → Looker Studio
 
 ## Tech stack
 
@@ -38,16 +38,42 @@ GBFS São Paulo → Python Producer → Redpanda/Kafka → PyFlink → GCS → K
 - **Ingestion:** Python producer
 - **Broker:** Redpanda / Kafka
 - **Stream processing:** PyFlink
+- **Orchestration:** Kestra
 - **Data lake:** Google Cloud Storage
 - **Data warehouse:** BigQuery
 - **Transformations:** dbt
 - **Dashboard:** Looker Studio
 - **IaC:** Terraform
 
-## Planned dashboard tiles
+## Dashboard
 
-1. **Temporal view:** bike availability trend over time
-2. **Categorical view:** stations or regions with the highest shortage/saturation rate
+Looker Studio dashboard: TODO: add public Looker Studio URL
+
+Main dashboard views:
+
+1. **Temporal view:** bike availability trend over time.
+2. **Latest station view:** station-level bike and dock availability for the frozen delivery window.
+3. **Risk view:** stations with higher bike shortage or dock saturation rates.
+
+## Validated pipeline status
+
+The current delivery path has been validated with the following successful steps:
+
+- `upload_raw_to_gcs`: OK
+- `load_raw_to_bigquery`: OK
+- `dbt run`: PASS=11
+- `dbt test`: PASS=31
+
+Post-deduplication dashboard mart checks:
+
+- `mart_station_status_latest_enriched`: 240 rows and 240 distinct stations
+- `mart_station_risk_summary_enriched`: 240 rows and 240 distinct stations
+
+## Data window and limitations
+
+The project uses real GBFS São Paulo data collected during a short project window and then frozen for delivery. The dashboard and marts are suitable for demonstrating an end-to-end data engineering pipeline, but they should not be interpreted as a long-term operational study of São Paulo bike-sharing behavior.
+
+Raw local data is intentionally excluded from git through `data/`. The reproducible delivery path is source ingestion, local raw landing, GCS upload, BigQuery raw load, dbt transformation, and Looker Studio visualization.
 
 ## Repository structure
 
@@ -73,3 +99,4 @@ GBFS São Paulo → Python Producer → Redpanda/Kafka → PyFlink → GCS → K
 ├── .gitignore
 ├── docker-compose.yml
 └── README.md
+```
