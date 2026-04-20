@@ -2,6 +2,8 @@
 
 Looker Studio dashboard: [BikeFlow SP Dashboard](https://datastudio.google.com/reporting/fd0249c0-9e47-499c-b3a0-12f585107ab7)
 
+![BikeFlow SP dashboard](../docs/images/bikeflow-dashboard-final.png)
+
 ## Purpose
 
 This dashboard presents the final analytics layer of the BikeFlow SP project. It shows how bike availability, shortage risk, and station-level operational imbalance can be monitored from curated dbt marts built on top of BigQuery.

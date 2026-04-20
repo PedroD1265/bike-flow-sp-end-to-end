@@ -34,6 +34,8 @@ Main feeds used:
 
 GBFS São Paulo → Python Producer → Redpanda/Kafka → PyFlink → raw local → GCS → Kestra → BigQuery raw → dbt marts → Looker Studio
 
+![BikeFlow SP architecture](docs/images/bikeflow-architecture.png)
+
 ## Tech stack
 
 * **Source:** GBFS São Paulo
@@ -50,6 +52,8 @@ GBFS São Paulo → Python Producer → Redpanda/Kafka → PyFlink → raw local
 ## Dashboard
 
 Looker Studio dashboard: [BikeFlow SP Dashboard](https://datastudio.google.com/reporting/fd0249c0-9e47-499c-b3a0-12f585107ab7)
+
+![BikeFlow SP dashboard](docs/images/bikeflow-dashboard-final.png)
 
 Main dashboard views:
 
