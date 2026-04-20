@@ -21,9 +21,10 @@ services:
     user: "root"
     command: server standalone
     environment:
-      GOOGLE_APPLICATION_CREDENTIALS: /home/pedro/.config/gcloud/application_default_credentials.json
-      DBT_PROFILES_DIR: /home/kestra/.dbt
-      CLOUDSDK_CONFIG: /home/pedro/.config/gcloud
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-/home/kestra/.config/gcloud/application_default_credentials.json}
+      DBT_PROFILES_DIR: ${DBT_PROFILES_DIR:-/home/kestra/.dbt}
+      CLOUDSDK_CONFIG: ${CLOUDSDK_CONFIG:-/home/kestra/.config/gcloud}
+      WORKSPACE_DIR: ${WORKSPACE_DIR:-/workspace}
       KESTRA_CONFIGURATION: |
         datasources:
           default:
@@ -48,10 +49,10 @@ services:
       - "8080:8080"
     volumes:
       - ./kestra/flows:/app/flows
-      - ./:/workspace
+      - ./:${WORKSPACE_DIR:-/workspace}
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/pedro/.config/gcloud:/home/pedro/.config/gcloud
-      - /home/pedro/.dbt:/home/kestra/.dbt:ro
+      - ${GCLOUD_CONFIG_DIR:-${HOME}/.config/gcloud}:${CLOUDSDK_CONFIG:-/home/kestra/.config/gcloud}
+      - ${DBT_PROFILES_HOST_DIR:-${HOME}/.dbt}:${DBT_PROFILES_DIR:-/home/kestra/.dbt}:ro
     depends_on:
       - postgres
     networks:

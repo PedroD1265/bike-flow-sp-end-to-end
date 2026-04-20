@@ -24,7 +24,7 @@ tasks:
       type: io.kestra.plugin.core.runner.Process
     commands:
       - export DBT_PROFILES_DIR="${DBT_PROFILES_DIR:-/home/kestra/.dbt}"
-      - export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/home/pedro/.config/gcloud/application_default_credentials.json}"
+      - export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/home/kestra/.config/gcloud/application_default_credentials.json}"
       - export GOOGLE_CLOUD_PROJECT="${GOOGLE_CLOUD_PROJECT:-bikeflow-sp-dezoomcamp}"
       - cd "${WORKSPACE_DIR:-/workspace}/dbt/bikeflow_sp"
       - dbt run
@@ -35,7 +35,7 @@ tasks:
       type: io.kestra.plugin.core.runner.Process
     commands:
       - export DBT_PROFILES_DIR="${DBT_PROFILES_DIR:-/home/kestra/.dbt}"
-      - export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/home/pedro/.config/gcloud/application_default_credentials.json}"
+      - export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/home/kestra/.config/gcloud/application_default_credentials.json}"
       - export GOOGLE_CLOUD_PROJECT="${GOOGLE_CLOUD_PROJECT:-bikeflow-sp-dezoomcamp}"
       - cd "${WORKSPACE_DIR:-/workspace}/dbt/bikeflow_sp"
       - dbt test

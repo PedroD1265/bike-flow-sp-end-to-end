@@ -117,24 +117,43 @@ This project is designed to run locally with Docker and Google Cloud resources.
 ### Local setup
 
 1. Copy `.env.example` to `.env` and adjust project, bucket, and credential paths.
+   The host paths for Google Cloud credentials and dbt profiles can be configured with `GCLOUD_CONFIG_DIR` and `DBT_PROFILES_HOST_DIR`.
+
 2. Start the local stack:
 
 ```bash
 docker compose up -d --build
 ```
 
-3. Run the producer and stream processing path.
+3. Generate local raw data before executing the Kestra flow:
+
+   * export station metadata with:
+
+```bash
+python scripts/export_station_information.py
+```
+
+* run the PyFlink landing job for station status raw files
+* run the producer to publish GBFS snapshots to Redpanda
 
 4. Execute the Kestra flow:
 
    * `bikeflow.load_raw_to_bigquery`
 
-5. Confirm transformations and tests:
+5. Confirm transformations and tests.
+
+If dbt is installed locally and your BigQuery profile is configured:
 
 ```bash
 cd dbt/bikeflow_sp
 dbt run
 dbt test
+```
+
+Alternatively, run dbt inside the Kestra container:
+
+```bash
+docker exec bikeflow-kestra sh -lc 'cd /workspace/dbt/bikeflow_sp && dbt run && dbt test'
 ```
 
 For the submitted delivery, the producer was stopped after collecting a short real GBFS data window so the dashboard remains stable and reproducible.
